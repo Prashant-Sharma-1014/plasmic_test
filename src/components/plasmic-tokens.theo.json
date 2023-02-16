@@ -1,0 +1,29 @@
+{
+  "props": [
+    {
+      "name": "Brand",
+      "type": "color",
+      "value": "#FFFFFFC4",
+      "category": "color",
+      "meta": {
+        "projectId": "nFjNKQj52vQ71pvQo3gqEb",
+        "id": "MYdzKV0PEgnQ6"
+      }
+    },
+    {
+      "name": "UnnamedStyleToken",
+      "type": "spacing",
+      "value": "330px",
+      "category": "spacing",
+      "meta": {
+        "projectId": "nFjNKQj52vQ71pvQo3gqEb",
+        "id": "uLUSNHBnK"
+      }
+    }
+  ],
+  "global": {
+    "meta": {
+      "source": "plasmic.app"
+    }
+  }
+}
