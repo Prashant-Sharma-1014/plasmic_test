@@ -10,7 +10,7 @@
 // Component: MtTa4bSigdn
 import * as React from "react";
 import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/host";
+import * as ph from "@plasmicapp/react-web/lib/host";
 import * as pp from "@plasmicapp/react-web";
 import {
   hasVariant,
@@ -60,6 +60,7 @@ function PlasmicButton__RenderFunc(props) {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
   const currentUser = p.useCurrentUser?.() || {};
+  const [$queries, setDollarQueries] = React.useState({});
   const stateSpecs = React.useMemo(
     () => [
       {
@@ -67,7 +68,7 @@ function PlasmicButton__RenderFunc(props) {
         type: "private",
         variableType: "variant",
         initFunc: true
-          ? ($props, $state, $ctx) => $props.showStartIcon
+          ? ({ $props, $state, $queries, $ctx }) => $props.showStartIcon
           : undefined
       },
       {
@@ -75,40 +76,47 @@ function PlasmicButton__RenderFunc(props) {
         type: "private",
         variableType: "variant",
         initFunc: true
-          ? ($props, $state, $ctx) => $props.showEndIcon
+          ? ({ $props, $state, $queries, $ctx }) => $props.showEndIcon
           : undefined
       },
       {
         path: "color",
         type: "private",
         variableType: "variant",
-        initFunc: true ? ($props, $state, $ctx) => $props.color : undefined
+        initFunc: true
+          ? ({ $props, $state, $queries, $ctx }) => $props.color
+          : undefined
       },
       {
         path: "iconOnly",
         type: "private",
         variableType: "variant",
-        initFunc: true ? ($props, $state, $ctx) => $props.iconOnly : undefined
+        initFunc: true
+          ? ({ $props, $state, $queries, $ctx }) => $props.iconOnly
+          : undefined
       },
       {
         path: "large",
         type: "private",
         variableType: "variant",
-        initFunc: true ? ($props, $state, $ctx) => $props.large : undefined
+        initFunc: true
+          ? ({ $props, $state, $queries, $ctx }) => $props.large
+          : undefined
       },
       {
         path: "isDisabled",
         type: "private",
         variableType: "variant",
-        initFunc: true ? ($props, $state, $ctx) => $props.isDisabled : undefined
+        initFunc: true
+          ? ({ $props, $state, $queries, $ctx }) => $props.isDisabled
+          : undefined
       }
     ],
 
     [$props, $ctx]
   );
 
-  const $state = p.useDollarState(stateSpecs, $props, $ctx);
-  const [$queries, setDollarQueries] = React.useState({});
+  const $state = p.useDollarState(stateSpecs, { $props, $ctx, $queries });
   const globalVariants = ensureGlobalVariants({
     screen: useScreenVariants_6HrcQsCevL9L7()
   });

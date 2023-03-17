@@ -10,7 +10,7 @@
 // Component: smr2aM6927y
 import * as React from "react";
 import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/host";
+import * as ph from "@plasmicapp/react-web/lib/host";
 import * as pp from "@plasmicapp/react-web";
 import {
   hasVariant,
@@ -54,27 +54,31 @@ function PlasmicSelect__OptionGroup__RenderFunc(props) {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
   const currentUser = p.useCurrentUser?.() || {};
+  const [$queries, setDollarQueries] = React.useState({});
   const stateSpecs = React.useMemo(
     () => [
       {
         path: "noTitle",
         type: "private",
         variableType: "variant",
-        initFunc: true ? ($props, $state, $ctx) => $props.noTitle : undefined
+        initFunc: true
+          ? ({ $props, $state, $queries, $ctx }) => $props.noTitle
+          : undefined
       },
       {
         path: "isFirst",
         type: "private",
         variableType: "variant",
-        initFunc: true ? ($props, $state, $ctx) => $props.isFirst : undefined
+        initFunc: true
+          ? ({ $props, $state, $queries, $ctx }) => $props.isFirst
+          : undefined
       }
     ],
 
     [$props, $ctx]
   );
 
-  const $state = p.useDollarState(stateSpecs, $props, $ctx);
-  const [$queries, setDollarQueries] = React.useState({});
+  const $state = p.useDollarState(stateSpecs, { $props, $ctx, $queries });
   const superContexts = {
     Select: React.useContext(SUPER__PlasmicSelect.Context)
   };

@@ -10,7 +10,7 @@
 // Component: L5S88iS9grPbp
 import * as React from "react";
 import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/host";
+import * as ph from "@plasmicapp/react-web/lib/host";
 import {
   classNames,
   createPlasmicElementProxy,

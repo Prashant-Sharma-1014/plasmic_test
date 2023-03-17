@@ -10,7 +10,7 @@
 // Component: 9-EOg_PHTe
 import * as React from "react";
 import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/host";
+import * as ph from "@plasmicapp/react-web/lib/host";
 import {
   hasVariant,
   classNames,

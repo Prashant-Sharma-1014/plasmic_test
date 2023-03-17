@@ -10,7 +10,7 @@
 // Component: Y89cMq9IGP
 import * as React from "react";
 import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/host";
+import * as ph from "@plasmicapp/react-web/lib/host";
 import {
   hasVariant,
   classNames,

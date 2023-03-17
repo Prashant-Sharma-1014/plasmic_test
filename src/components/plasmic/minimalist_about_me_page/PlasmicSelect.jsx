@@ -10,7 +10,7 @@
 // Component: 2MVK-CXBu7v
 import * as React from "react";
 import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/host";
+import * as ph from "@plasmicapp/react-web/lib/host";
 import * as pp from "@plasmicapp/react-web";
 import {
   hasVariant,
@@ -21,6 +21,7 @@ import {
 } from "@plasmicapp/react-web";
 import Select__Overlay from "../../Select__Overlay"; // plasmic-import: p-NMYh8z2rW/component
 import Select__Option from "../../Select__Option"; // plasmic-import: Ik5poxetv42/component
+import Select__OptionGroup from "../../Select__OptionGroup"; // plasmic-import: smr2aM6927y/component
 import "@plasmicapp/react-web/lib/plasmic.css";
 import projectcss from "./plasmic_minimalist_about_me_page.module.css"; // plasmic-import: nFjNKQj52vQ71pvQo3gqEb/projectcss
 import sty from "./PlasmicSelect.module.css"; // plasmic-import: 2MVK-CXBu7v/css
@@ -41,7 +42,8 @@ export const PlasmicSelect__ArgProps = new Array(
   "value",
   "name",
   "aria-label",
-  "aria-labelledby"
+  "aria-labelledby",
+  "options"
 );
 
 const PlasmicSelectContext = React.createContext(undefined);
@@ -66,6 +68,7 @@ function PlasmicSelect__RenderFunc(props) {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
   const currentUser = p.useCurrentUser?.() || {};
+  const [$queries, setDollarQueries] = React.useState({});
   const stateSpecs = React.useMemo(
     () => [
       {
@@ -73,34 +76,46 @@ function PlasmicSelect__RenderFunc(props) {
         type: "private",
         variableType: "variant",
         initFunc: true
-          ? ($props, $state, $ctx) => $props.showPlaceholder
+          ? ({ $props, $state, $queries, $ctx }) => $props.showPlaceholder
           : undefined
       },
       {
         path: "isOpen",
         type: "private",
         variableType: "variant",
-        initFunc: true ? ($props, $state, $ctx) => $props.isOpen : undefined
+        initFunc: true
+          ? ({ $props, $state, $queries, $ctx }) => $props.isOpen
+          : undefined
       },
       {
         path: "isDisabled",
         type: "private",
         variableType: "variant",
-        initFunc: true ? ($props, $state, $ctx) => $props.isDisabled : undefined
+        initFunc: true
+          ? ({ $props, $state, $queries, $ctx }) => $props.isDisabled
+          : undefined
       },
       {
         path: "color",
         type: "private",
         variableType: "variant",
-        initFunc: true ? ($props, $state, $ctx) => $props.color : undefined
+        initFunc: true
+          ? ({ $props, $state, $queries, $ctx }) => $props.color
+          : undefined
+      },
+      {
+        path: "value",
+        type: "writable",
+        variableType: "text",
+        valueProp: "value",
+        onChangeProp: "onChange"
       }
     ],
 
     [$props, $ctx]
   );
 
-  const $state = p.useDollarState(stateSpecs, $props, $ctx);
-  const [$queries, setDollarQueries] = React.useState({});
+  const $state = p.useDollarState(stateSpecs, { $props, $ctx, $queries });
   const [isRootFocusVisibleWithin, triggerRootFocusVisibleWithinProps] =
     useTrigger("useFocusVisibleWithin", {
       isTextInput: false
@@ -538,45 +553,52 @@ function PlasmicSelect__RenderFunc(props) {
 }
 
 function useBehavior(props, ref) {
-  if (!("children" in props)) {
-    props = {
-      ...props,
-      children: (
-        <React.Fragment>
-          <Select__Option
-            className={classNames("__wab_instance", sty.option__fKc8I)}
-            value={"value1"}
-          >
-            {"Option 1"}
-          </Select__Option>
+  if (!("options" in props)) {
+    if (!("children" in props)) {
+      props = {
+        ...props,
+        children: (
+          <React.Fragment>
+            <Select__Option
+              className={classNames("__wab_instance", sty.option__fKc8I)}
+              value={"value1"}
+            >
+              {"Option 1"}
+            </Select__Option>
 
-          <Select__Option
-            className={classNames("__wab_instance", sty.option__oIsQw)}
-            value={"value2"}
-          >
-            {"Option 2"}
-          </Select__Option>
-        </React.Fragment>
-      )
-    };
+            <Select__Option
+              className={classNames("__wab_instance", sty.option__oIsQw)}
+              value={"value2"}
+            >
+              {"Option 2"}
+            </Select__Option>
+          </React.Fragment>
+        )
+      };
+    }
   }
   return pp.useSelect(
     PlasmicSelect,
     props,
     {
-      isOpenVariant: { group: "isOpen", variant: "isOpen" },
-      placeholderVariant: {
-        group: "showPlaceholder",
-        variant: "showPlaceholder"
+      ...{
+        isOpenVariant: { group: "isOpen", variant: "isOpen" },
+        placeholderVariant: {
+          group: "showPlaceholder",
+          variant: "showPlaceholder"
+        },
+        isDisabledVariant: { group: "isDisabled", variant: "isDisabled" },
+        triggerContentSlot: "selectedContent",
+        optionsSlot: "children",
+        placeholderSlot: "placeholder",
+        root: "root",
+        trigger: "trigger",
+        overlay: "overlay",
+        optionsContainer: "optionsContainer"
       },
-      isDisabledVariant: { group: "isDisabled", variant: "isDisabled" },
-      triggerContentSlot: "selectedContent",
-      optionsSlot: "children",
-      placeholderSlot: "placeholder",
-      root: "root",
-      trigger: "trigger",
-      overlay: "overlay",
-      optionsContainer: "optionsContainer"
+      OptionComponent: Select__Option,
+      OptionGroupComponent: Select__OptionGroup,
+      itemsProp: "options"
     },
     ref
   );

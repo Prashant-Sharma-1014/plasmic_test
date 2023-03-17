@@ -10,7 +10,7 @@
 // Component: Ik5poxetv42
 import * as React from "react";
 import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/host";
+import * as ph from "@plasmicapp/react-web/lib/host";
 import * as pp from "@plasmicapp/react-web";
 import {
   hasVariant,
@@ -55,35 +55,39 @@ function PlasmicSelect__Option__RenderFunc(props) {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
   const currentUser = p.useCurrentUser?.() || {};
+  const [$queries, setDollarQueries] = React.useState({});
   const stateSpecs = React.useMemo(
     () => [
       {
         path: "isSelected",
         type: "private",
         variableType: "variant",
-        initFunc: true ? ($props, $state, $ctx) => $props.isSelected : undefined
+        initFunc: true
+          ? ({ $props, $state, $queries, $ctx }) => $props.isSelected
+          : undefined
       },
       {
         path: "isHighlighted",
         type: "private",
         variableType: "variant",
         initFunc: true
-          ? ($props, $state, $ctx) => $props.isHighlighted
+          ? ({ $props, $state, $queries, $ctx }) => $props.isHighlighted
           : undefined
       },
       {
         path: "isDisabled",
         type: "private",
         variableType: "variant",
-        initFunc: true ? ($props, $state, $ctx) => $props.isDisabled : undefined
+        initFunc: true
+          ? ({ $props, $state, $queries, $ctx }) => $props.isDisabled
+          : undefined
       }
     ],
 
     [$props, $ctx]
   );
 
-  const $state = p.useDollarState(stateSpecs, $props, $ctx);
-  const [$queries, setDollarQueries] = React.useState({});
+  const $state = p.useDollarState(stateSpecs, { $props, $ctx, $queries });
   const superContexts = {
     Select: React.useContext(SUPER__PlasmicSelect.Context)
   };

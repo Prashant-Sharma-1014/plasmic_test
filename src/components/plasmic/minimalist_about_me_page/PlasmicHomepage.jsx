@@ -10,7 +10,7 @@
 // Component: Olm3_ykywBLmU
 import * as React from "react";
 import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/host";
+import * as ph from "@plasmicapp/react-web/lib/host";
 import {
   hasVariant,
   classNames,
@@ -62,6 +62,7 @@ function PlasmicHomepage__RenderFunc(props) {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
   const currentUser = p.useCurrentUser?.() || {};
+  const [$queries, setDollarQueries] = React.useState({});
   const stateSpecs = React.useMemo(
     () => [
       {
@@ -69,7 +70,7 @@ function PlasmicHomepage__RenderFunc(props) {
         type: "private",
         variableType: "variant",
         initFunc: true
-          ? ($props, $state, $ctx) => $props.unnamedVariant
+          ? ({ $props, $state, $queries, $ctx }) => $props.unnamedVariant
           : undefined
       }
     ],
@@ -77,8 +78,7 @@ function PlasmicHomepage__RenderFunc(props) {
     [$props, $ctx]
   );
 
-  const $state = p.useDollarState(stateSpecs, $props, $ctx);
-  const [$queries, setDollarQueries] = React.useState({});
+  const $state = p.useDollarState(stateSpecs, { $props, $ctx, $queries });
   const globalVariants = ensureGlobalVariants({
     screen: useScreenVariants_6HrcQsCevL9L7()
   });
@@ -658,37 +658,110 @@ function PlasmicHomepage__RenderFunc(props) {
                   </div>
                 </Button2>
 
-                <GraphqlFetcher
-                  data-plasmic-name={"graphQlFetcher"}
-                  data-plasmic-override={overrides.graphQlFetcher}
-                  className={classNames("__wab_instance", sty.graphQlFetcher)}
-                  dataName={"fetchedData"}
-                  errorDisplay={
-                    <ph.DataCtxReader>
-                      {$ctx => "Error fetching data"}
-                    </ph.DataCtxReader>
-                  }
-                  headers={{
-                    "Content-Type": "application/json",
-                    Accept: "application/json"
-                  }}
-                  loadingDisplay={
-                    <ph.DataCtxReader>{$ctx => "Loading..."}</ph.DataCtxReader>
-                  }
-                  method={"POST"}
-                  noLayout={false}
-                  previewErrorDisplay={true}
-                  previewSpinner={true}
-                  query={{
-                    query:
-                      "query MyQuery($name: String) {\n  characters(filter: {name: $name}) {\n    results {\n      name\n      species\n      image\n    }\n  }\n}\n",
-                    variables: { name: "Rick Sanchez" }
-                  }}
-                  url={"https://rickandmortyapi.com/graphql"}
-                  varOverrides={{}}
-                />
+                {([2, 3, 4] ?? []).map((currentItem, currentIndex) => (
+                  <div
+                    className={classNames(projectcss.all, sty.freeBox__nQc2)}
+                    key={currentIndex}
+                  />
+                ))}
               </p.Stack>
             </p.Stack>
+
+            <div className={classNames(projectcss.all, sty.freeBox__vEzIb)}>
+              <GraphqlFetcher
+                data-plasmic-name={"graphQlFetcher"}
+                data-plasmic-override={overrides.graphQlFetcher}
+                className={classNames("__wab_instance", sty.graphQlFetcher)}
+                dataName={"fetchedData"}
+                errorDisplay={
+                  <ph.DataCtxReader>
+                    {$ctx => "Error fetching data"}
+                  </ph.DataCtxReader>
+                }
+                headers={{
+                  "Content-Type": "application/json",
+                  Accept: "application/json"
+                }}
+                loadingDisplay={
+                  <ph.DataCtxReader>{$ctx => "Loading..."}</ph.DataCtxReader>
+                }
+                method={"POST"}
+                noLayout={false}
+                query={{
+                  query:
+                    "query MyQuery($name: String) {\n  characters(filter: {name: $name}) {\n    results {\n      name\n      species\n      image\n    }\n  }\n}\n",
+                  variables: {}
+                }}
+                url={"https://rickandmortyapi.com/graphql"}
+                varOverrides={{}}
+              >
+                <ph.DataCtxReader>
+                  {$ctx =>
+                    (
+                      (() => {
+                        try {
+                          return $ctx.fetchedData.data.characters.results;
+                        } catch (e) {
+                          if (e instanceof TypeError) {
+                            return [];
+                          }
+                          throw e;
+                        }
+                      })() ?? []
+                    ).map((currentItem, currentIndex) => (
+                      <div
+                        className={classNames(
+                          projectcss.all,
+                          sty.freeBox__b3Dw0
+                        )}
+                        key={currentIndex}
+                      >
+                        <p.PlasmicImg
+                          alt={""}
+                          className={classNames(sty.img__dEjoi)}
+                          displayHeight={"auto"}
+                          displayMaxHeight={"none"}
+                          displayMaxWidth={"100%"}
+                          displayMinHeight={"0"}
+                          displayMinWidth={"0"}
+                          displayWidth={"auto"}
+                          loading={"lazy"}
+                          src={(() => {
+                            try {
+                              return currentItem.image;
+                            } catch (e) {
+                              if (e instanceof TypeError) {
+                                return undefined;
+                              }
+                              throw e;
+                            }
+                          })()}
+                        />
+
+                        <div
+                          className={classNames(
+                            projectcss.all,
+                            projectcss.__wab_text,
+                            sty.text__mgq6R
+                          )}
+                        >
+                          {(() => {
+                            try {
+                              return currentItem.name;
+                            } catch (e) {
+                              if (e instanceof TypeError) {
+                                return "Enter some text";
+                              }
+                              throw e;
+                            }
+                          })()}
+                        </div>
+                      </div>
+                    ))
+                  }
+                </ph.DataCtxReader>
+              </GraphqlFetcher>
+            </div>
           </div>
 
           <div className={classNames(projectcss.all, sty.freeBox__tny31)}>
@@ -705,7 +778,14 @@ function PlasmicHomepage__RenderFunc(props) {
                     className={classNames(
                       projectcss.all,
                       projectcss.__wab_text,
-                      sty.text__qSLnr
+                      sty.text__qSLnr,
+                      {
+                        [sty.textunnamedVariant__qSLnrOeGVu]: hasVariant(
+                          $state,
+                          "unnamedVariant",
+                          "unnamedVariant"
+                        )
+                      }
                     )}
                   >
                     {"Prashant Sharma "}
@@ -947,7 +1027,7 @@ function PlasmicHomepage__RenderFunc(props) {
 
 const PlasmicDescendants = {
   root: ["root", "foreground2", "graphQlFetcher", "copyableLink", "columns"],
-  foreground2: ["foreground2", "graphQlFetcher"],
+  foreground2: ["foreground2"],
   graphQlFetcher: ["graphQlFetcher"],
   copyableLink: ["copyableLink"],
   columns: ["columns"]

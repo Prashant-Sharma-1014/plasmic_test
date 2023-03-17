@@ -1,12 +1,12 @@
 .root {
-  flex-direction: row;
   display: flex;
+  flex-direction: row;
   position: relative;
 }
 .root > :global(.__wab_flex-container) {
   flex-direction: row;
-  justify-content: flex-start;
   align-items: baseline;
+  justify-content: flex-start;
   margin-left: calc(0px - 14px);
   width: calc(100% + 14px);
 }
